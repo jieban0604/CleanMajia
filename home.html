@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>云杉垃圾清理</title>
+    <style>
+        /* 重置样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            font-family: "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #F5F7FA;
+            color: #333;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* iPhone 15 Pro Max 外壳样式 */
+        .device-container {
+            position: relative;
+            width: 100%;
+            max-width: 428px;
+            height: 100vh;
+            max-height: 926px;
+            margin: 20px auto;
+            background: #1A1A1A;
+            border-radius: 55px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            padding: 12px;
+        }
+        
+        /* 顶部刘海 */
+        .notch {
+            position: absolute;
+            width: 150px;
+            height: 35px;
+            background: #1A1A1A;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-bottom-left-radius: 18px;
+            border-bottom-right-radius: 18px;
+            z-index: 100;
+        }
+        
+        /* 侧边按钮 */
+        .side-button {
+            position: absolute;
+            width: 3px;
+            height: 80px;
+            background: #2A2A2A;
+            right: -3px;
+            top: 120px;
+            border-top-left-radius: 2px;
+            border-bottom-left-radius: 2px;
+        }
+        
+        .side-button.power {
+            top: 220px;
+            height: 35px;
+        }
+        
+        .side-button.left {
+            left: -3px;
+            right: auto;
+            top: 150px;
+            height: 65px;
+            border-top-right-radius: 2px;
+            border-bottom-right-radius: 2px;
+        }
+        
+        /* 底部指示条 */
+        .bottom-indicator {
+            position: absolute;
+            width: 140px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 3px;
+            z-index: 100;
+        }
+        
+        /* 屏幕内容 */
+        .screen {
+            background-color: #F5F7FA;
+            width: 100%;
+            height: 100%;
+            border-radius: 45px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* 顶部状态栏 */
+        .status-bar {
+            height: 44px;
+            background-color: #F5F7FA;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            padding-top: 12px;
+        }
+        
+        .status-bar .time {
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .status-bar .icons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .status-bar .icons i {
+            font-size: 16px;
+        }
+        
+        /* 应用主内容 */
+        .content {
+            padding: 15px 20px;
+            height: calc(100% - 44px);
+            overflow-y: auto;
+        }
+        
+        /* 顶部品牌 */
+        .brand {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .brand h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #0D47A1;
+            margin-right: auto;
+        }
+        
+        .stats {
+            background-color: #0D47A1;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: white;
+            font-weight: 600;
+        }
+        
+        /* 一键清理区域 */
+        .clean-section {
+            background: linear-gradient(135deg, #0D47A1, #1976D2);
+            border-radius: 25px;
+            padding: 25px 20px;
+            margin-bottom: 30px;
+            color: white;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(13, 71, 161, 0.3);
+        }
+        
+        .clean-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .junk-size {
+            font-size: 48px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        
+        .junk-unit {
+            font-size: 20px;
+            font-weight: 400;
+        }
+        
+        .clean-button {
+            width: 180px;
+            height: 180px;
+            background-color: white;
+            border-radius: 50%;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            position: relative;
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+        }
+        
+        .clean-button:active {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            background-color: #E3F2FD;
+        }
+        
+        .clean-button .icon {
+            width: 70px;
+            height: 70px;
+            margin-bottom: 15px;
+        }
+        
+        .clean-button span {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0D47A1;
+        }
+        
+        /* 清理动画 */
+        .clean-progress {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            transform: rotate(-90deg);
+        }
+        
+        .clean-progress circle {
+            fill: none;
+            stroke-width: 14;
+            stroke-linecap: round;
+            stroke: #E0E0E0;
+        }
+        
+        .clean-progress .progress {
+            stroke: #0D47A1;
+            stroke-dasharray: 500;
+            stroke-dashoffset: 500;
+            transition: stroke-dashoffset 1s linear;
+        }
+        
+        /* 功能卡片区域 */
+        .function-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 22px;
+            padding: 20px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+            cursor: pointer;
+            min-height: 150px;
+        }
+        
+        .card:active {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            background-color: #F5F5F5;
+        }
+        
+        .card .icon {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 15px;
+            border-radius: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+        }
+        
+        .memory .icon {
+            background: linear-gradient(135deg, #006064, #00838F);
+        }
+        
+        .power .icon {
+            background: linear-gradient(135deg, #2E7D32, #388E3C);
+        }
+        
+        .virus .icon {
+            background: linear-gradient(135deg, #E65100, #EF6C00);
+        }
+        
+        .wechat .icon {
+            background: linear-gradient(135deg, #004D40, #00695C);
+        }
+        
+        .malware .icon {
+            background: linear-gradient(135deg, #880E4F, #AD1457);
+        }
+        
+        .card .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #212121;
+            margin-bottom: 8px;
+        }
+        
+        .card .desc {
+            font-size: 16px;
+            color: #424242;
+        }
+        
+        /* 底部广告/推荐区域 */
+        .bottom-section {
+            background-color: #0D47A1;
+            border-radius: 22px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(13, 71, 161, 0.2);
+        }
+        
+        .bottom-section img {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            margin-right: 20px;
+            background-color: white;
+            padding: 10px;
+        }
+        
+        .bottom-section .text {
+            flex: 1;
+        }
+        
+        .bottom-section h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+        }
+        
+        .bottom-section p {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        /* 粒子动画效果 */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: #64B5F6;
+            border-radius: 50%;
+            opacity: 0;
+        }
+        
+        /* 清理完成状态 */
+        .cleaned {
+            display: none;
+            text-align: center;
+            margin-top: 15px;
+        }
+        
+        .cleaned span {
+            color: #FFEB3B;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        /* 为卡片添加波纹效果 */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.7);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="device-container">
+        <!-- iPhone样式元素 -->
+        <div class="notch"></div>
+        <div class="side-button"></div>
+        <div class="side-button power"></div>
+        <div class="side-button left"></div>
+        <div class="bottom-indicator"></div>
+        
+        <!-- 屏幕内容 -->
+        <div class="screen">
+            <!-- 顶部状态栏 -->
+            <div class="status-bar">
+                <div class="time">9:41</div>
+                <div class="icons">
+                    <span>📶</span>
+                    <span>📡</span>
+                    <span>🔋</span>
+                </div>
+            </div>
+            
+            <!-- 主内容区域 -->
+            <div class="content">
+                <!-- 品牌标题 -->
+                <div class="brand">
+                    <h1>云杉垃圾清理</h1>
+                    <div class="stats">已为千万用户清理垃圾</div>
+                </div>
+                
+                <!-- 一键清理区域 -->
+                <div class="clean-section">
+                    <div class="clean-title">检测到您手机可清理的垃圾文件</div>
+                    <div class="junk-size">1.2<span class="junk-unit">GB</span></div>
+                    
+                    <div class="clean-button" id="cleanButton">
+                        <svg class="clean-progress" viewBox="0 0 160 160">
+                            <circle cx="80" cy="80" r="70"></circle>
+                            <circle class="progress" cx="80" cy="80" r="70"></circle>
+                        </svg>
+                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMwRDQ3QTEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMjEgMTZWOGEyIDIgMCAwIDAtMS0xLjczbC03LTRhMiAyIDAgMCAwLTIgMGwtNyA0QTIgMiAwIDAgMCAzIDh2OGEyIDIgMCAwIDAgMSAxLjczbDcgNGEyIDIgMCAwIDAgMiAwbDctNEEyIDIgMCAwIDAgMjEgMTZ6Ij48L3BhdGg+PHBvbHlsaW5lIHBvaW50cz0iMy4yNyA2Ljk2IDEyIDEyLjAxIDIwLjczIDYuOTYiPjwvcG9seWxpbmU+PGxpbmUgeDE9IjEyIiB5MT0iMjIuMDgiIHgyPSIxMiIgeTI9IjEyIj48L2xpbmU+PC9zdmc+" class="icon" alt="清理图标">
+                        <span>一键清理</span>
+                    </div>
+                    
+                    <div class="cleaned" id="cleanedStatus">
+                        <span>已清理完成！手机焕然一新</span>
+                    </div>
+                </div>
+                
+                <!-- 功能卡片区域 -->
+                <div class="function-cards">
+                    <!-- 内存加速 -->
+                    <div class="card memory">
+                        <div class="icon">🚀</div>
+                        <div class="card-title">内存加速</div>
+                        <div class="desc">释放内存提升运行速度</div>
+                    </div>
+                    
+                    <!-- 强力省电 -->
+                    <div class="card power">
+                        <div class="icon">⚡</div>
+                        <div class="card-title">强力省电</div>
+                        <div class="desc">优化耗电延长续航</div>
+                    </div>
+                    
+                    <!-- 病毒查杀 -->
+                    <div class="card virus">
+                        <div class="icon">🛡️</div>
+                        <div class="card-title">病毒查杀</div>
+                        <div class="desc">全面扫描保障安全</div>
+                    </div>
+                    
+                    <!-- 微信专清 -->
+                    <div class="card wechat">
+                        <div class="icon">💬</div>
+                        <div class="card-title">微信专清</div>
+                        <div class="desc">彻底清理微信垃圾</div>
+                    </div>
+                    
+                    <!-- 恶意软件检测 -->
+                    <div class="card malware">
+                        <div class="icon">🔍</div>
+                        <div class="card-title">恶意软件检测</div>
+                        <div class="desc">查找并移除恶意程序</div>
+                    </div>
+                </div>
+                
+                <!-- 底部推荐区域 -->
+                <div class="bottom-section">
+                    <img src="data:image/png;base64,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" alt="底部图标">
+                    <div class="text">
+                        <h3>隐私保护专家</h3>
+                        <p>保护您的数据安全，防止隐私泄露</p>
+                    </div>
+                </div>
+                
+                <!-- 粒子动画容器 -->
+                <div class="particles" id="particles"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cleanButton = document.getElementById('cleanButton');
+            const progressCircle = document.querySelector('.clean-progress .progress');
+            const cleanedStatus = document.getElementById('cleanedStatus');
+            const particlesContainer = document.getElementById('particles');
+            
+            // 清理按钮点击事件
+            cleanButton.addEventListener('click', function() {
+                // 重置状态
+                cleanedStatus.style.display = 'none';
+                
+                // 设置进度条动画
+                progressCircle.style.strokeDashoffset = '500';
+                setTimeout(() => {
+                    // 开始进度条动画
+                    progressCircle.style.strokeDashoffset = '0';
+                    
+                    // 3秒后显示清理完成
+                    setTimeout(() => {
+                        cleanedStatus.style.display = 'block';
+                        createParticles();
+                    }, 3000);
+                }, 100);
+            });
+            
+            // 创建清理完成后的粒子动画
+            function createParticles() {
+                // 清空之前的粒子
+                particlesContainer.innerHTML = '';
+                
+                // 按钮的位置
+                const buttonRect = cleanButton.getBoundingClientRect();
+                const centerX = buttonRect.left + buttonRect.width/2;
+                const centerY = buttonRect.top + buttonRect.height/2;
+                
+                // 创建粒子
+                for (let i = 0; i < 40; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    
+                    // 随机颜色
+                    const colors = ['#0D47A1', '#1976D2', '#FFEB3B', '#FFC107', '#FFFFFF'];
+                    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                    particle.style.backgroundColor = randomColor;
+                    
+                    // 随机大小
+                    const size = Math.random() * 12 + 6;
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    
+                    // 随机角度和距离
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = Math.random() * 100 + 60;
+                    
+                    // 起始位置（从按钮中心开始）
+                    particle.style.left = `${centerX}px`;
+                    particle.style.top = `${centerY}px`;
+                    
+                    // 添加到容器
+                    particlesContainer.appendChild(particle);
+                    
+                    // 应用动画
+                    setTimeout(() => {
+                        particle.style.transition = 'all 1s ease-out';
+                        particle.style.left = `${centerX + Math.cos(angle) * distance}px`;
+                        particle.style.top = `${centerY + Math.sin(angle) * distance}px`;
+                        particle.style.opacity = '1';
+                        
+                        // 淡出
+                        setTimeout(() => {
+                            particle.style.opacity = '0';
+                        }, 800);
+                    }, Math.random() * 200);
+                }
+            }
+            
+            // 为功能卡片添加点击波纹效果
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const ripple = document.createElement('div');
+                    ripple.classList.add('ripple');
+                    ripple.style.width = '20px';
+                    ripple.style.height = '20px';
+                    ripple.style.left = `${x}px`;
+                    ripple.style.top = `${y}px`;
+                    
+                    this.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
