@@ -262,6 +262,8 @@
             transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
             cursor: pointer;
             min-height: 150px;
+            position: relative;
+            overflow: hidden;
         }
         
         .card:active {
@@ -390,11 +392,15 @@
             transform: scale(0);
             animation: ripple 0.6s linear;
             pointer-events: none;
+            width: 100px;
+            height: 100px;
+            margin-left: -50px;
+            margin-top: -50px;
         }
         
         @keyframes ripple {
             to {
-                transform: scale(4);
+                transform: scale(3);
                 opacity: 0;
             }
         }
@@ -488,10 +494,12 @@
                 
                 <!-- 底部推荐区域 -->
                 <div class="bottom-section">
-                    <img src="data:image/png;base64,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" alt="底部图标">
+                    <div style="width: 70px; height: 70px; border-radius: 18px; overflow: hidden; margin-right: 20px; position: relative;">
+                        <img src="http://gui.vigame.cn/apkFenFa/geyu_20250327143611_144-y.png" alt="云杉垃圾清理" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; border: none; display: block;">
+                    </div>
                     <div class="text">
-                        <h3>隐私保护专家</h3>
-                        <p>保护您的数据安全，防止隐私泄露</p>
+                        <h3>云杉垃圾清理</h3>
+                        <p>一键清理，让手机焕然一新</p>
                     </div>
                 </div>
                 
@@ -588,8 +596,6 @@
                     
                     const ripple = document.createElement('div');
                     ripple.classList.add('ripple');
-                    ripple.style.width = '20px';
-                    ripple.style.height = '20px';
                     ripple.style.left = `${x}px`;
                     ripple.style.top = `${y}px`;
                     
