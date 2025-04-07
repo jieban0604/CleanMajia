@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>云杉垃圾清理</title>
+    <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
     <style>
         /* 重置样式 */
         * {
@@ -335,6 +336,26 @@
             padding: 10px;
         }
         
+        .app-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            overflow: hidden;
+            margin-right: 20px;
+            position: relative;
+        }
+        
+        .app-icon-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: none;
+            display: block;
+        }
+        
         .bottom-section .text {
             flex: 1;
         }
@@ -404,208 +425,310 @@
                 opacity: 0;
             }
         }
+        
+        [v-cloak] {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <div class="device-container">
-        <!-- iPhone样式元素 -->
-        <div class="notch"></div>
-        <div class="side-button"></div>
-        <div class="side-button power"></div>
-        <div class="side-button left"></div>
-        <div class="bottom-indicator"></div>
-        
-        <!-- 屏幕内容 -->
-        <div class="screen">
-            <!-- 顶部状态栏 -->
-            <div class="status-bar">
-                <div class="time">9:41</div>
-                <div class="icons">
-                    <span>📶</span>
-                    <span>📡</span>
-                    <span>🔋</span>
-                </div>
-            </div>
+    <div id="app" v-cloak>
+        <div class="device-container">
+            <!-- iPhone样式元素 -->
+            <div class="notch"></div>
+            <div class="side-button"></div>
+            <div class="side-button power"></div>
+            <div class="side-button left"></div>
+            <div class="bottom-indicator"></div>
             
-            <!-- 主内容区域 -->
-            <div class="content">
-                <!-- 品牌标题 -->
-                <div class="brand">
-                    <h1>云杉垃圾清理</h1>
-                    <div class="stats">已为千万用户清理垃圾</div>
-                </div>
-                
-                <!-- 一键清理区域 -->
-                <div class="clean-section">
-                    <div class="clean-title">检测到您手机可清理的垃圾文件</div>
-                    <div class="junk-size">1.2<span class="junk-unit">GB</span></div>
-                    
-                    <div class="clean-button" id="cleanButton">
-                        <svg class="clean-progress" viewBox="0 0 160 160">
-                            <circle cx="80" cy="80" r="70"></circle>
-                            <circle class="progress" cx="80" cy="80" r="70"></circle>
-                        </svg>
-                        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMwRDQ3QTEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMjEgMTZWOGEyIDIgMCAwIDAtMS0xLjczbC03LTRhMiAyIDAgMCAwLTIgMGwtNyA0QTIgMiAwIDAgMCAzIDh2OGEyIDIgMCAwIDAgMSAxLjczbDcgNGEyIDIgMCAwIDAgMiAwbDctNEEyIDIgMCAwIDAgMjEgMTZ6Ij48L3BhdGg+PHBvbHlsaW5lIHBvaW50cz0iMy4yNyA2Ljk2IDEyIDEyLjAxIDIwLjczIDYuOTYiPjwvcG9seWxpbmU+PGxpbmUgeDE9IjEyIiB5MT0iMjIuMDgiIHgyPSIxMiIgeTI9IjEyIj48L2xpbmU+PC9zdmc+" class="icon" alt="清理图标">
-                        <span>一键清理</span>
-                    </div>
-                    
-                    <div class="cleaned" id="cleanedStatus">
-                        <span>已清理完成！手机焕然一新</span>
+            <!-- 屏幕内容 -->
+            <div class="screen">
+                <!-- 顶部状态栏 -->
+                <div class="status-bar">
+                    <div class="time">{{currentTime}}</div>
+                    <div class="icons">
+                        <span>📶</span>
+                        <span>📡</span>
+                        <span>🔋</span>
                     </div>
                 </div>
                 
-                <!-- 功能卡片区域 -->
-                <div class="function-cards">
-                    <!-- 内存加速 -->
-                    <div class="card memory">
-                        <div class="icon">🚀</div>
-                        <div class="card-title">内存加速</div>
-                        <div class="desc">释放内存提升运行速度</div>
+                <!-- 主内容区域 -->
+                <div class="content">
+                    <!-- 品牌标题 -->
+                    <div class="brand">
+                        <h1>云杉垃圾清理</h1>
+                        <div class="stats">已为千万用户清理垃圾</div>
                     </div>
                     
-                    <!-- 强力省电 -->
-                    <div class="card power">
-                        <div class="icon">⚡</div>
-                        <div class="card-title">强力省电</div>
-                        <div class="desc">优化耗电延长续航</div>
+                    <!-- 一键清理区域 -->
+                    <div class="clean-section">
+                        <div class="clean-title">检测到您手机可清理的垃圾文件</div>
+                        <div class="junk-size">{{junkSize.toFixed(1)}}<span class="junk-unit">GB</span></div>
+                        
+                        <div class="clean-button" @click="startCleaning">
+                            <svg class="clean-progress" viewBox="0 0 160 160">
+                                <circle cx="80" cy="80" r="70"></circle>
+                                <circle class="progress" cx="80" cy="80" r="70" :style="{strokeDashoffset: progressOffset}"></circle>
+                            </svg>
+                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMwRDQ3QTEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMjEgMTZWOGEyIDIgMCAwIDAtMS0xLjczbC03LTRhMiAyIDAgMCAwLTIgMGwtNyA0QTIgMiAwIDAgMCAzIDh2OGEyIDIgMCAwIDAgMSAxLjczbDcgNGEyIDIgMCAwIDAgMiAwbDctNEEyIDIgMCAwIDAgMjEgMTZ6Ij48L3BhdGg+PHBvbHlsaW5lIHBvaW50cz0iMy4yNyA2Ljk2IDEyIDEyLjAxIDIwLjczIDYuOTYiPjwvcG9seWxpbmU+PGxpbmUgeDE9IjEyIiB5MT0iMjIuMDgiIHgyPSIxMiIgeTI9IjEyIj48L2xpbmU+PC9zdmc+" class="icon" alt="清理图标">
+                            <span>一键清理</span>
+                        </div>
+                        
+                        <div class="cleaned" :style="{display: cleanCompleted ? 'block' : 'none'}">
+                            <span>已清理完成！手机焕然一新</span>
+                        </div>
+                        
+                        <div v-if="noJunkTipVisible" style="text-align: center; margin-top: 15px;">
+                            <span style="color: #FFEB3B; font-weight: 700; font-size: 18px;">当前没有垃圾可清理</span>
+                        </div>
                     </div>
                     
-                    <!-- 病毒查杀 -->
-                    <div class="card virus">
-                        <div class="icon">🛡️</div>
-                        <div class="card-title">病毒查杀</div>
-                        <div class="desc">全面扫描保障安全</div>
+                    <!-- 功能卡片区域 -->
+                    <div class="function-cards">
+                        <!-- 功能卡片组件 -->
+                        <div 
+                            v-for="(card, index) in functionCards" 
+                            :key="index" 
+                            :class="['card', card.type]" 
+                            @click="onCardClick($event, card)">
+                            <div class="icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="30" height="30" fill="white" v-html="card.svgPath"></svg>
+                            </div>
+                            <div class="card-title">{{card.title}}</div>
+                            <div class="desc">{{card.desc}}</div>
+                        </div>
                     </div>
                     
-                    <!-- 微信专清 -->
-                    <div class="card wechat">
-                        <div class="icon">💬</div>
-                        <div class="card-title">微信专清</div>
-                        <div class="desc">彻底清理微信垃圾</div>
+                    <!-- 底部推荐区域 -->
+                    <div class="bottom-section">
+                        <div class="app-icon">
+                            <img src="http://gui.vigame.cn/apkFenFa/geyu_20250327143611_144-y.png" alt="云杉垃圾清理" class="app-icon-img">
+                        </div>
+                        <div class="text">
+                            <h3>云杉垃圾清理</h3>
+                            <p>一键清理，让手机焕然一新</p>
+                        </div>
                     </div>
                     
-                    <!-- 恶意软件检测 -->
-                    <div class="card malware">
-                        <div class="icon">🔍</div>
-                        <div class="card-title">恶意软件检测</div>
-                        <div class="desc">查找并移除恶意程序</div>
-                    </div>
+                    <!-- 粒子动画容器 -->
+                    <div class="particles" ref="particles"></div>
                 </div>
-                
-                <!-- 底部推荐区域 -->
-                <div class="bottom-section">
-                    <div style="width: 70px; height: 70px; border-radius: 18px; overflow: hidden; margin-right: 20px; position: relative;">
-                        <img src="http://gui.vigame.cn/apkFenFa/geyu_20250327143611_144-y.png" alt="云杉垃圾清理" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; border: none; display: block;">
-                    </div>
-                    <div class="text">
-                        <h3>云杉垃圾清理</h3>
-                        <p>一键清理，让手机焕然一新</p>
-                    </div>
-                </div>
-                
-                <!-- 粒子动画容器 -->
-                <div class="particles" id="particles"></div>
             </div>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const cleanButton = document.getElementById('cleanButton');
-            const progressCircle = document.querySelector('.clean-progress .progress');
-            const cleanedStatus = document.getElementById('cleanedStatus');
-            const particlesContainer = document.getElementById('particles');
-            
-            // 清理按钮点击事件
-            cleanButton.addEventListener('click', function() {
-                // 重置状态
-                cleanedStatus.style.display = 'none';
-                
-                // 设置进度条动画
-                progressCircle.style.strokeDashoffset = '500';
-                setTimeout(() => {
-                    // 开始进度条动画
-                    progressCircle.style.strokeDashoffset = '0';
+        new Vue({
+            el: '#app',
+            data: {
+                currentTime: '9:41',
+                initialJunkSize: 1.2,
+                junkSize: 1.2,
+                progressOffset: 500,
+                cleanCompleted: false,
+                cleaning: false,
+                noJunkTipVisible: false,
+                audioContext: null,
+                functionCards: [
+                    {
+                        type: 'memory',
+                        title: '内存加速',
+                        desc: '释放内存提升运行速度',
+                        svgPath: '<path d="M13.13 22.19L11.5 18.36C13.07 17.78 14.54 17 15.9 16.09L13.13 22.19M5.64 12.5L1.81 10.87L7.91 8.1C7 9.46 6.22 10.93 5.64 12.5M21.61 2.39C21.61 2.39 16.66 0.269 11 5.93C8.81 8.12 7.5 10.53 6.65 12.64C6.37 13.39 6.56 14.21 7.11 14.77L9.24 16.89C9.79 17.45 10.61 17.63 11.36 17.35C13.5 16.53 15.88 15.19 18.07 13C23.73 7.34 21.61 2.39 21.61 2.39M14.54 9.46C13.76 8.68 13.76 7.41 14.54 6.63S16.59 5.85 17.37 6.63C18.14 7.41 18.15 8.68 17.37 9.46C16.59 10.24 15.32 10.24 14.54 9.46Z"/>'
+                    },
+                    {
+                        type: 'power',
+                        title: '强力省电',
+                        desc: '优化耗电延长续航',
+                        svgPath: '<path d="M16 20H8V6h8m.67-2H15V2H9v2H7.33C6.6 4 6 4.6 6 5.33v15.34C6 21.4 6.6 22 7.33 22h9.34c.73 0 1.33-.6 1.33-1.33V5.33C18 4.6 17.4 4 16.67 4z"/>'
+                    },
+                    {
+                        type: 'virus',
+                        title: '病毒查杀',
+                        desc: '全面扫描保障安全',
+                        svgPath: '<path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>'
+                    },
+                    {
+                        type: 'wechat',
+                        title: '微信专清',
+                        desc: '彻底清理微信垃圾',
+                        svgPath: '<path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/><path d="M7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/>'
+                    },
+                    {
+                        type: 'malware',
+                        title: '恶意软件检测',
+                        desc: '查找并移除恶意程序',
+                        svgPath: '<path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>'
+                    }
+                ]
+            },
+            mounted() {
+                this.updateTime();
+                setInterval(this.updateTime, 60000);
+            },
+            methods: {
+                updateTime() {
+                    const now = new Date();
+                    this.currentTime = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
+                },
+                startCleaning() {
+                    // 播放点击音效
+                    this.playClickSound();
                     
-                    // 3秒后显示清理完成
-                    setTimeout(() => {
-                        cleanedStatus.style.display = 'block';
-                        createParticles();
-                    }, 3000);
-                }, 100);
-            });
-            
-            // 创建清理完成后的粒子动画
-            function createParticles() {
-                // 清空之前的粒子
-                particlesContainer.innerHTML = '';
-                
-                // 按钮的位置
-                const buttonRect = cleanButton.getBoundingClientRect();
-                const centerX = buttonRect.left + buttonRect.width/2;
-                const centerY = buttonRect.top + buttonRect.height/2;
-                
-                // 创建粒子
-                for (let i = 0; i < 40; i++) {
-                    const particle = document.createElement('div');
-                    particle.classList.add('particle');
-                    
-                    // 随机颜色
-                    const colors = ['#0D47A1', '#1976D2', '#FFEB3B', '#FFC107', '#FFFFFF'];
-                    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-                    particle.style.backgroundColor = randomColor;
-                    
-                    // 随机大小
-                    const size = Math.random() * 12 + 6;
-                    particle.style.width = `${size}px`;
-                    particle.style.height = `${size}px`;
-                    
-                    // 随机角度和距离
-                    const angle = Math.random() * Math.PI * 2;
-                    const distance = Math.random() * 100 + 60;
-                    
-                    // 起始位置（从按钮中心开始）
-                    particle.style.left = `${centerX}px`;
-                    particle.style.top = `${centerY}px`;
-                    
-                    // 添加到容器
-                    particlesContainer.appendChild(particle);
-                    
-                    // 应用动画
-                    setTimeout(() => {
-                        particle.style.transition = 'all 1s ease-out';
-                        particle.style.left = `${centerX + Math.cos(angle) * distance}px`;
-                        particle.style.top = `${centerY + Math.sin(angle) * distance}px`;
-                        particle.style.opacity = '1';
+                    // 如果垃圾为0，显示提示
+                    if (this.junkSize === 0) {
+                        this.cleanCompleted = false;
+                        this.noJunkTipVisible = true;
                         
-                        // 淡出
+                        // 2秒后隐藏提示
                         setTimeout(() => {
-                            particle.style.opacity = '0';
-                        }, 800);
-                    }, Math.random() * 200);
-                }
-            }
-            
-            // 为功能卡片添加点击波纹效果
-            const cards = document.querySelectorAll('.card');
-            cards.forEach(card => {
-                card.addEventListener('click', function(e) {
-                    const rect = this.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
+                            this.noJunkTipVisible = false;
+                        }, 2000);
+                        
+                        return;
+                    }
+                    
+                    // 如果正在清理，不执行
+                    if (this.cleaning) return;
+                    
+                    // 重置状态
+                    this.noJunkTipVisible = false;
+                    this.cleanCompleted = false;
+                    this.cleaning = true;
+                    this.junkSize = this.initialJunkSize;
+                    this.progressOffset = 500;
+                    
+                    // 启动清理动画
+                    let startTime = null;
+                    const duration = 3000;
+                    
+                    const animateClean = (timestamp) => {
+                        if (!startTime) startTime = timestamp;
+                        const elapsed = timestamp - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        
+                        // 更新进度条和垃圾大小
+                        this.progressOffset = (500 * (1 - progress)).toFixed(1);
+                        this.junkSize = this.initialJunkSize * (1 - progress);
+                        
+                        if (progress < 1) {
+                            requestAnimationFrame(animateClean);
+                        } else {
+                            // 完成清理
+                            this.junkSize = 0;
+                            this.cleanCompleted = true;
+                            this.cleaning = false;
+                            this.createParticles();
+                        }
+                    };
+                    
+                    setTimeout(() => {
+                        requestAnimationFrame(animateClean);
+                    }, 100);
+                },
+                initAudio() {
+                    if (!this.audioContext) {
+                        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    return this.audioContext;
+                },
+                playClickSound() {
+                    const context = this.initAudio();
+                    
+                    // 创建振荡器
+                    const oscillator = context.createOscillator();
+                    const gainNode = context.createGain();
+                    
+                    // 设置振荡器类型和频率
+                    oscillator.type = 'sine';
+                    oscillator.frequency.setValueAtTime(800, context.currentTime);
+                    oscillator.frequency.exponentialRampToValueAtTime(200, context.currentTime + 0.1);
+                    
+                    // 设置音量衰减
+                    gainNode.gain.setValueAtTime(0.3, context.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.1);
+                    
+                    // 连接节点
+                    oscillator.connect(gainNode);
+                    gainNode.connect(context.destination);
+                    
+                    // 播放音效
+                    oscillator.start();
+                    oscillator.stop(context.currentTime + 0.1);
+                },
+                onCardClick(event, card) {
+                    // 播放点击音效
+                    this.playClickSound();
+                    
+                    // 添加波纹效果
+                    const rect = event.currentTarget.getBoundingClientRect();
+                    const x = event.clientX - rect.left;
+                    const y = event.clientY - rect.top;
                     
                     const ripple = document.createElement('div');
                     ripple.classList.add('ripple');
                     ripple.style.left = `${x}px`;
                     ripple.style.top = `${y}px`;
                     
-                    this.appendChild(ripple);
+                    event.currentTarget.appendChild(ripple);
                     
                     setTimeout(() => {
                         ripple.remove();
                     }, 600);
-                });
-            });
+                },
+                createParticles() {
+                    // 清空之前的粒子
+                    const particlesContainer = this.$refs.particles;
+                    particlesContainer.innerHTML = '';
+                    
+                    // 获取按钮的位置
+                    const cleanButton = document.querySelector('.clean-button');
+                    const buttonRect = cleanButton.getBoundingClientRect();
+                    const centerX = buttonRect.left + buttonRect.width/2;
+                    const centerY = buttonRect.top + buttonRect.height/2;
+                    
+                    // 创建粒子
+                    for (let i = 0; i < 40; i++) {
+                        const particle = document.createElement('div');
+                        particle.classList.add('particle');
+                        
+                        // 随机颜色
+                        const colors = ['#0D47A1', '#1976D2', '#FFEB3B', '#FFC107', '#FFFFFF'];
+                        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                        particle.style.backgroundColor = randomColor;
+                        
+                        // 随机大小
+                        const size = Math.random() * 12 + 6;
+                        particle.style.width = `${size}px`;
+                        particle.style.height = `${size}px`;
+                        
+                        // 随机角度和距离
+                        const angle = Math.random() * Math.PI * 2;
+                        const distance = Math.random() * 100 + 60;
+                        
+                        // 起始位置（从按钮中心开始）
+                        particle.style.left = `${centerX}px`;
+                        particle.style.top = `${centerY}px`;
+                        
+                        // 添加到容器
+                        particlesContainer.appendChild(particle);
+                        
+                        // 应用动画
+                        setTimeout(() => {
+                            particle.style.transition = 'all 1s ease-out';
+                            particle.style.left = `${centerX + Math.cos(angle) * distance}px`;
+                            particle.style.top = `${centerY + Math.sin(angle) * distance}px`;
+                            particle.style.opacity = '1';
+                            
+                            // 淡出
+                            setTimeout(() => {
+                                particle.style.opacity = '0';
+                            }, 800);
+                        }, Math.random() * 200);
+                    }
+                }
+            }
         });
     </script>
 </body>
