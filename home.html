@@ -91,12 +91,22 @@
             height: 32%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             position: relative;
-            padding-bottom: 20px;
+            padding-bottom: 35px;
+            padding-top: 2px;
             border-bottom-left-radius: 20px;
             border-bottom-right-radius: 20px;
+        }
+
+        .app-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0;
+            margin-top: 0;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
         }
 
         .main-cta {
@@ -105,9 +115,11 @@
             padding: 12px 40px;
             border-radius: 30px;
             font-weight: bold;
-            margin-top: 15px;
+            margin-top: 5px;
             transition: all 0.2s;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 5;
         }
 
         .main-cta:active {
@@ -122,11 +134,11 @@
             gap: 15px;
             position: relative;
             z-index: 10;
-            margin-top: -10px;
+            margin-top: 0px;
         }
 
         .special-cleanup {
-            padding: 0 15px 15px;
+            padding: 15px;
         }
         
         .special-cleanup-grid {
@@ -144,7 +156,7 @@
             flex-direction: row;
             justify-content: flex-start;
             align-items: center;
-            padding: 12px 10px;
+            padding: 15px 12px;
             text-align: left;
             border-right: 1px solid #f1f1f1;
             border-bottom: 1px solid #f1f1f1;
@@ -169,6 +181,7 @@
             object-fit: contain;
             margin-right: 8px;
             flex-shrink: 0;
+            filter: invert(58%) sepia(81%) saturate(415%) hue-rotate(84deg) brightness(94%) contrast(92%);
         }
         
         .special-cleanup-text {
@@ -207,7 +220,7 @@
         .tool-item {
             display: flex;
             align-items: center;
-            padding: 12px 0;
+            padding: 15px 0;
             border-bottom: 1px solid #f1f1f1;
             justify-content: space-between;
         }
@@ -248,6 +261,7 @@
             height: 24px;
             object-fit: contain;
             margin-right: 15px;
+            filter: invert(63%) sepia(14%) saturate(1699%) hue-rotate(348deg) brightness(101%) contrast(101%);
         }
 
         .big-icon {
@@ -263,8 +277,9 @@
             color: #fff;
             font-size: 16px;
             font-weight: 500;
-            margin-top: 5px;
+            margin-top: -8px;
             text-align: center;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
 
         /* 径向渐变动画 */
@@ -275,7 +290,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 0;
         }
 
         .pulse {
@@ -283,26 +298,26 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 70%);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(255, 255, 255, 0) 70%);
             opacity: 0;
-            animation: pulse 2s infinite;
+            animation: pulse 1.8s infinite;
         }
 
         .pulse:nth-child(2) {
-            animation-delay: 0.5s;
+            animation-delay: 0.4s;
         }
 
         .pulse:nth-child(3) {
-            animation-delay: 1s;
+            animation-delay: 0.8s;
         }
 
         @keyframes pulse {
             0% {
                 transform: scale(0.5);
-                opacity: 0.9;
+                opacity: 0.95;
             }
             100% {
-                transform: scale(1.8);
+                transform: scale(1.9);
                 opacity: 0;
             }
         }
@@ -310,7 +325,7 @@
         .quick-action-card {
             background-color: white;
             border-radius: 15px;
-            padding: 15px;
+            padding: 18px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             transition: transform 0.2s;
             display: flex;
@@ -328,6 +343,7 @@
             object-fit: contain;
             margin-right: 12px;
             flex-shrink: 0;
+            filter: invert(46%) sepia(60%) saturate(2103%) hue-rotate(190deg) brightness(95%) contrast(95%);
         }
 
         .quick-action-text {
@@ -365,7 +381,7 @@
                 <div class="app-content">
                     <!-- 核心功能区 -->
                     <div class="main-section">
-                        <h1 class="text-white text-2xl font-bold mb-2">清理大师</h1>
+                        <h1 class="app-title">清理大师</h1>
                         <div class="pulse-container">
                             <div class="pulse"></div>
                             <div class="pulse"></div>
@@ -463,7 +479,7 @@
                                         <p class="text-sm text-gray-500">检测网络速度</p>
                                     </div>
                                 </div>
-                                <button class="action-btn" @click.stop="testWifi">开始测速</button>
+                                <button class="action-btn" @click.stop="testWifi">立即测速</button>
                             </div>
                             <div class="tool-item" @click="checkWifiUsers">
                                 <div class="tool-item-content">
@@ -477,7 +493,7 @@
                             </div>
                             <div class="tool-item" @click="controlTraffic">
                                 <div class="tool-item-content">
-                                    <img src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/svgs/solid/wifi.svg" class="icon" alt="流量控制" style="filter: invert(25%);">
+                                    <img src="https://img.icons8.com/ios-filled/48/network.png" class="icon" alt="流量控制">
                                     <div>
                                         <h3 class="font-bold text-gray-800">流量控制</h3>
                                         <p class="text-sm text-gray-500">节省流量使用</p>
