@@ -2,734 +2,551 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>云杉垃圾清理</title>
-    <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>清理大师</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.2.31/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* 重置样式 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            font-family: "PingFang SC", "Helvetica Neue", Helvetica, Arial, sans-serif;
-        }
-        
         body {
-            background-color: #F5F7FA;
-            color: #333;
-            height: 100vh;
-            overflow: hidden;
+            background-color: #f5f5f7;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
         }
-        
-        /* iPhone 15 Pro Max 外壳样式 */
-        .device-container {
+
+        /* iPhone 15 Pro Max 样式 */
+        .iphone-frame {
             position: relative;
-            width: 100%;
-            max-width: 428px;
-            height: 100vh;
-            max-height: 926px;
-            margin: 20px auto;
-            background: #1A1A1A;
+            width: 430px;
+            height: 932px;
+            background-color: #1a1a1a;
             border-radius: 55px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            padding: 15px;
             overflow: hidden;
-            padding: 12px;
         }
-        
-        /* 顶部刘海 */
+
+        /* 刘海区域 */
         .notch {
             position: absolute;
-            width: 150px;
-            height: 35px;
-            background: #1A1A1A;
-            top: 0;
+            width: 160px;
+            height: 34px;
+            background-color: #1a1a1a;
+            top: 12px;
             left: 50%;
             transform: translateX(-50%);
-            border-bottom-left-radius: 18px;
-            border-bottom-right-radius: 18px;
-            z-index: 100;
+            border-radius: 0 0 20px 20px;
+            z-index: 10;
         }
-        
-        /* 侧边按钮 */
-        .side-button {
-            position: absolute;
-            width: 3px;
-            height: 80px;
-            background: #2A2A2A;
-            right: -3px;
-            top: 120px;
-            border-top-left-radius: 2px;
-            border-bottom-left-radius: 2px;
-        }
-        
-        .side-button.power {
-            top: 220px;
-            height: 35px;
-        }
-        
-        .side-button.left {
-            left: -3px;
-            right: auto;
-            top: 150px;
-            height: 65px;
-            border-top-right-radius: 2px;
-            border-bottom-right-radius: 2px;
-        }
-        
-        /* 底部指示条 */
-        .bottom-indicator {
-            position: absolute;
-            width: 140px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.5);
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 3px;
-            z-index: 100;
-        }
-        
-        /* 屏幕内容 */
+
+        /* 屏幕 */
         .screen {
-            background-color: #F5F7FA;
-            width: 100%;
+            background-color: #EAF1F7;
             height: 100%;
+            width: 100%;
             border-radius: 45px;
             overflow: hidden;
             position: relative;
         }
-        
-        /* 顶部状态栏 */
+
+        /* 状态栏 */
         .status-bar {
-            height: 44px;
-            background-color: #F5F7FA;
+            height: 47px;
+            background-color: #FFA85C;
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            padding-top: 12px;
-        }
-        
-        .status-bar .time {
-            font-weight: 600;
-            font-size: 16px;
-        }
-        
-        .status-bar .icons {
-            display: flex;
-            gap: 5px;
-        }
-        
-        .status-bar .icons i {
-            font-size: 16px;
-        }
-        
-        /* 应用主内容 */
-        .content {
-            padding: 15px 20px;
-            height: calc(100% - 44px);
-            overflow-y: auto;
-        }
-        
-        /* 顶部品牌 */
-        .brand {
-            display: flex;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-        
-        .brand h1 {
-            font-size: 28px;
-            font-weight: 700;
-            color: #0D47A1;
-            margin-right: auto;
-        }
-        
-        .stats {
-            background-color: #0D47A1;
-            padding: 8px 15px;
-            border-radius: 20px;
+            padding: 10px 20px 0 20px;
             font-size: 14px;
-            color: white;
             font-weight: 600;
+            color: #fff;
         }
-        
-        /* 一键清理区域 */
-        .clean-section {
-            background: linear-gradient(135deg, #0D47A1, #1976D2);
-            border-radius: 25px;
-            padding: 25px 20px;
-            margin-bottom: 30px;
-            color: white;
-            text-align: center;
-            box-shadow: 0 8px 20px rgba(13, 71, 161, 0.3);
+
+        /* 底部指示条 */
+        .home-indicator {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 140px;
+            height: 5px;
+            background-color: #000;
+            border-radius: 3px;
+            opacity: 0.3;
         }
-        
-        .clean-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 15px;
+
+        /* 主要内容样式 */
+        .app-content {
+            height: calc(100% - 47px);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
-        
-        .junk-size {
-            font-size: 48px;
-            font-weight: 700;
-            margin: 10px 0;
-        }
-        
-        .junk-unit {
-            font-size: 20px;
-            font-weight: 400;
-        }
-        
-        .clean-button {
-            width: 180px;
-            height: 180px;
-            background-color: white;
-            border-radius: 50%;
-            margin: 20px auto;
+
+        /* 定制样式 */
+        .main-section {
+            background: linear-gradient(to bottom, #FFA85C 70%, rgba(255, 168, 92, 0.7) 90%, rgba(255, 168, 92, 0) 100%);
+            height: 32%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            cursor: pointer;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
             position: relative;
-            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+            padding-bottom: 20px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
         }
-        
-        .clean-button:active {
-            transform: scale(1.05);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-            background-color: #E3F2FD;
+
+        .main-cta {
+            background-color: #FFFFFF;
+            color: #FFA85C;
+            padding: 12px 40px;
+            border-radius: 30px;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        
-        .clean-button .icon {
-            width: 70px;
-            height: 70px;
-            margin-bottom: 15px;
+
+        .main-cta:active {
+            transform: scale(0.98);
+            background-color: #F8F9FB;
         }
-        
-        .clean-button span {
-            font-size: 22px;
-            font-weight: 700;
-            color: #0D47A1;
-        }
-        
-        /* 清理动画 */
-        .clean-progress {
-            position: absolute;
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            transform: rotate(-90deg);
-        }
-        
-        .clean-progress circle {
-            fill: none;
-            stroke-width: 14;
-            stroke-linecap: round;
-            stroke: #E0E0E0;
-        }
-        
-        .clean-progress .progress {
-            stroke: #0D47A1;
-            stroke-dasharray: 500;
-            stroke-dashoffset: 500;
-            transition: stroke-dashoffset 1s linear;
-        }
-        
-        /* 功能卡片区域 */
-        .function-cards {
+
+        .quick-actions {
+            padding: 15px;
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(2, 1fr);
             gap: 15px;
-            margin-bottom: 25px;
+            position: relative;
+            z-index: 10;
+            margin-top: -10px;
+        }
+
+        .special-cleanup {
+            padding: 0 15px 15px;
         }
         
+        .special-cleanup-grid {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            overflow: hidden;
+        }
+        
+        .special-cleanup-item {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 12px 10px;
+            text-align: left;
+            border-right: 1px solid #f1f1f1;
+            border-bottom: 1px solid #f1f1f1;
+            transition: background-color 0.2s;
+        }
+        
+        .special-cleanup-item:nth-child(2n) {
+            border-right: none;
+        }
+        
+        .special-cleanup-item:nth-child(3), .special-cleanup-item:nth-child(4) {
+            border-bottom: none;
+        }
+        
+        .special-cleanup-item:active {
+            background-color: #f5f5f5;
+        }
+        
+        .special-cleanup-icon {
+            width: 22px;
+            height: 22px;
+            object-fit: contain;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        
+        .special-cleanup-text {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .special-cleanup-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 2px;
+        }
+        
+        .special-cleanup-desc {
+            font-size: 13px;
+            color: #777;
+        }
+
+        .other-tools {
+            padding: 15px;
+        }
+
         .card {
             background-color: white;
-            border-radius: 22px;
-            padding: 20px 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
-            cursor: pointer;
-            min-height: 150px;
-            position: relative;
-            overflow: hidden;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
         }
-        
+
         .card:active {
-            transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            background-color: #F5F5F5;
+            transform: translateY(2px);
         }
-        
-        .card .icon {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 15px;
-            border-radius: 18px;
+
+        .tool-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f1f1;
+            justify-content: space-between;
+        }
+
+        .tool-item-content {
+            display: flex;
+            align-items: center;
+        }
+
+        .action-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
+        }
+
+        .action-btn:active {
+            transform: scale(0.95);
+            background-color: #3d8b40;
+            box-shadow: 0 1px 2px rgba(76, 175, 80, 0.2);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #333;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            margin-right: 15px;
+        }
+
+        .big-icon {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .alert-text {
+            color: #fff;
+            font-size: 16px;
+            font-weight: 500;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        /* 径向渐变动画 */
+        .pulse-container {
+            position: relative;
+            width: 140px;
+            height: 140px;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 30px;
+            margin-bottom: 10px;
         }
-        
-        .memory .icon {
-            background: linear-gradient(135deg, #006064, #00838F);
-        }
-        
-        .power .icon {
-            background: linear-gradient(135deg, #2E7D32, #388E3C);
-        }
-        
-        .virus .icon {
-            background: linear-gradient(135deg, #E65100, #EF6C00);
-        }
-        
-        .wechat .icon {
-            background: linear-gradient(135deg, #004D40, #00695C);
-        }
-        
-        .malware .icon {
-            background: linear-gradient(135deg, #880E4F, #AD1457);
-        }
-        
-        .card .card-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #212121;
-            margin-bottom: 8px;
-        }
-        
-        .card .desc {
-            font-size: 16px;
-            color: #424242;
-        }
-        
-        /* 底部广告/推荐区域 */
-        .bottom-section {
-            background-color: #0D47A1;
-            border-radius: 22px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 15px rgba(13, 71, 161, 0.2);
-        }
-        
-        .bottom-section img {
-            width: 70px;
-            height: 70px;
-            border-radius: 18px;
-            margin-right: 20px;
-            background-color: white;
-            padding: 10px;
-        }
-        
-        .app-icon {
-            width: 70px;
-            height: 70px;
-            border-radius: 18px;
-            overflow: hidden;
-            margin-right: 20px;
-            position: relative;
-        }
-        
-        .app-icon-img {
+
+        .pulse {
             position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            border: none;
-            display: block;
-        }
-        
-        .bottom-section .text {
-            flex: 1;
-        }
-        
-        .bottom-section h3 {
-            font-size: 18px;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 8px;
-        }
-        
-        .bottom-section p {
-            font-size: 16px;
-            color: rgba(255, 255, 255, 0.9);
-        }
-        
-        /* 粒子动画效果 */
-        .particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 10;
-        }
-        
-        .particle {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            background-color: #64B5F6;
             border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 70%);
             opacity: 0;
+            animation: pulse 2s infinite;
         }
-        
-        /* 清理完成状态 */
-        .cleaned {
-            display: none;
-            text-align: center;
-            margin-top: 15px;
+
+        .pulse:nth-child(2) {
+            animation-delay: 0.5s;
         }
-        
-        .cleaned span {
-            color: #FFEB3B;
-            font-weight: 700;
-            font-size: 18px;
+
+        .pulse:nth-child(3) {
+            animation-delay: 1s;
         }
-        
-        /* 为卡片添加波纹效果 */
-        .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.7);
-            transform: scale(0);
-            animation: ripple 0.6s linear;
-            pointer-events: none;
-            width: 100px;
-            height: 100px;
-            margin-left: -50px;
-            margin-top: -50px;
-        }
-        
-        @keyframes ripple {
-            to {
-                transform: scale(3);
+
+        @keyframes pulse {
+            0% {
+                transform: scale(0.5);
+                opacity: 0.9;
+            }
+            100% {
+                transform: scale(1.8);
                 opacity: 0;
             }
         }
-        
-        [v-cloak] {
-            display: none;
+
+        .quick-action-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .quick-action-card:active {
+            transform: translateY(2px);
+        }
+
+        .quick-action-icon {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .quick-action-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .quick-action-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 3px;
+        }
+
+        .quick-action-desc {
+            font-size: 13px;
+            color: #777;
         }
     </style>
 </head>
 <body>
-    <div id="app" v-cloak>
-        <div class="device-container">
-            <!-- iPhone样式元素 -->
+    <div id="app">
+        <div class="iphone-frame">
             <div class="notch"></div>
-            <div class="side-button"></div>
-            <div class="side-button power"></div>
-            <div class="side-button left"></div>
-            <div class="bottom-indicator"></div>
-            
-            <!-- 屏幕内容 -->
             <div class="screen">
-                <!-- 顶部状态栏 -->
                 <div class="status-bar">
-                    <div class="time">{{currentTime}}</div>
-                    <div class="icons">
-                        <span>📶</span>
-                        <span>📡</span>
-                        <span>🔋</span>
+                    <span>14:21</span>
+                    <span>
+                        <i class="signal">📶</i>
+                        <i class="wifi">📶</i>
+                        <i class="battery">🔋</i>
+                    </span>
+                </div>
+                
+                <div class="app-content">
+                    <!-- 核心功能区 -->
+                    <div class="main-section">
+                        <h1 class="text-white text-2xl font-bold mb-2">清理大师</h1>
+                        <div class="pulse-container">
+                            <div class="pulse"></div>
+                            <div class="pulse"></div>
+                            <div class="pulse"></div>
+                            <img src="https://img.icons8.com/color/96/waste--v1.png" class="big-icon" alt="垃圾桶">
+                        </div>
+                        <p class="alert-text">发现大量隐藏垃圾</p>
+                        <button class="main-cta" @click="startScan">快速扫描</button>
+                    </div>
+                    
+                    <!-- 快捷功能区 -->
+                    <div class="quick-actions">
+                        <div class="quick-action-card" @click="accelerate">
+                            <img src="https://img.icons8.com/ios-filled/48/rocket.png" class="quick-action-icon" alt="加速">
+                            <div class="quick-action-text">
+                                <div class="quick-action-title">手机加速</div>
+                                <div class="quick-action-desc">释放内存空间</div>
+                            </div>
+                        </div>
+                        <div class="quick-action-card" @click="analyzeMemory">
+                            <img src="https://img.icons8.com/ios-filled/48/processor.png" class="quick-action-icon" alt="内存">
+                            <div class="quick-action-text">
+                                <div class="quick-action-title">内存分析</div>
+                                <div class="quick-action-desc">查找内存占用</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 专项清理区 -->
+                    <div class="px-4">
+                        <h2 class="section-title">专项清理</h2>
+                    </div>
+                    <div class="special-cleanup">
+                        <div class="special-cleanup-grid">
+                            <div class="special-cleanup-item" @click="uninstallApps">
+                                <img src="https://img.icons8.com/ios-filled/48/trash.png" class="special-cleanup-icon" alt="应用卸载">
+                                <div class="special-cleanup-text">
+                                    <div class="special-cleanup-title">应用卸载</div>
+                                    <div class="special-cleanup-desc">一键清理应用</div>
+                                </div>
+                            </div>
+                            <div class="special-cleanup-item" @click="cleanImages">
+                                <img src="https://img.icons8.com/ios-filled/48/picture.png" class="special-cleanup-icon" alt="图片清理">
+                                <div class="special-cleanup-text">
+                                    <div class="special-cleanup-title">图片清理</div>
+                                    <div class="special-cleanup-desc">快速清理图片</div>
+                                </div>
+                            </div>
+                            <div class="special-cleanup-item" @click="cleanVideos">
+                                <img src="https://img.icons8.com/ios-filled/48/video.png" class="special-cleanup-icon" alt="视频清理">
+                                <div class="special-cleanup-text">
+                                    <div class="special-cleanup-title">视频清理</div>
+                                    <div class="special-cleanup-desc">释放视频空间</div>
+                                </div>
+                            </div>
+                            <div class="special-cleanup-item" @click="cleanNotifications">
+                                <img src="https://img.icons8.com/ios-filled/48/appointment-reminders.png" class="special-cleanup-icon" alt="通知清理">
+                                <div class="special-cleanup-text">
+                                    <div class="special-cleanup-title">通知清理</div>
+                                    <div class="special-cleanup-desc">整理系统通知</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 其他工具区 -->
+                    <div class="other-tools">
+                        <h2 class="section-title">其他工具</h2>
+                        <div class="card">
+                            <div class="tool-item" @click="fullSearch">
+                                <div class="tool-item-content">
+                                    <img src="https://img.icons8.com/ios-filled/48/search.png" class="icon" alt="全盘搜索">
+                                    <div>
+                                        <h3 class="font-bold text-gray-800">全盘搜索</h3>
+                                        <p class="text-sm text-gray-500">快速查找文件</p>
+                                    </div>
+                                </div>
+                                <button class="action-btn" @click.stop="fullSearch">立即搜索</button>
+                            </div>
+                            <div class="tool-item" @click="cleanLargeFiles">
+                                <div class="tool-item-content">
+                                    <img src="https://img.icons8.com/ios-filled/48/database.png" class="icon" alt="大文件专清">
+                                    <div>
+                                        <h3 class="font-bold text-gray-800">大文件专清</h3>
+                                        <p class="text-sm text-gray-500">发现大型文件</p>
+                                    </div>
+                                </div>
+                                <button class="action-btn" @click.stop="cleanLargeFiles">立即清理</button>
+                            </div>
+                            <div class="tool-item" @click="testWifi">
+                                <div class="tool-item-content">
+                                    <img src="https://img.icons8.com/ios-filled/48/wifi--v1.png" class="icon" alt="WiFi测速">
+                                    <div>
+                                        <h3 class="font-bold text-gray-800">WiFi测速</h3>
+                                        <p class="text-sm text-gray-500">检测网络速度</p>
+                                    </div>
+                                </div>
+                                <button class="action-btn" @click.stop="testWifi">开始测速</button>
+                            </div>
+                            <div class="tool-item" @click="checkWifiUsers">
+                                <div class="tool-item-content">
+                                    <img src="https://img.icons8.com/ios-filled/48/wi-fi-connected.png" class="icon" alt="蹭网检测">
+                                    <div>
+                                        <h3 class="font-bold text-gray-800">蹭网检测</h3>
+                                        <p class="text-sm text-gray-500">查找陌生设备</p>
+                                    </div>
+                                </div>
+                                <button class="action-btn" @click.stop="checkWifiUsers">立即检测</button>
+                            </div>
+                            <div class="tool-item" @click="controlTraffic">
+                                <div class="tool-item-content">
+                                    <img src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.2/svgs/solid/wifi.svg" class="icon" alt="流量控制" style="filter: invert(25%);">
+                                    <div>
+                                        <h3 class="font-bold text-gray-800">流量控制</h3>
+                                        <p class="text-sm text-gray-500">节省流量使用</p>
+                                    </div>
+                                </div>
+                                <button class="action-btn" @click.stop="controlTraffic">优化流量</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- 主内容区域 -->
-                <div class="content">
-                    <!-- 品牌标题 -->
-                    <div class="brand">
-                        <h1>云杉垃圾清理</h1>
-                        <div class="stats">已为千万用户清理垃圾</div>
-                    </div>
-                    
-                    <!-- 一键清理区域 -->
-                    <div class="clean-section">
-                        <div class="clean-title">检测到您手机可清理的垃圾文件</div>
-                        <div class="junk-size">{{junkSize.toFixed(1)}}<span class="junk-unit">GB</span></div>
-                        
-                        <div class="clean-button" @click="startCleaning">
-                            <svg class="clean-progress" viewBox="0 0 160 160">
-                                <circle cx="80" cy="80" r="70"></circle>
-                                <circle class="progress" cx="80" cy="80" r="70" :style="{strokeDashoffset: progressOffset}"></circle>
-                            </svg>
-                            <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IiMwRDQ3QTEiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIj48cGF0aCBkPSJNMjEgMTZWOGEyIDIgMCAwIDAtMS0xLjczbC03LTRhMiAyIDAgMCAwLTIgMGwtNyA0QTIgMiAwIDAgMCAzIDh2OGEyIDIgMCAwIDAgMSAxLjczbDcgNGEyIDIgMCAwIDAgMiAwbDctNEEyIDIgMCAwIDAgMjEgMTZ6Ij48L3BhdGg+PHBvbHlsaW5lIHBvaW50cz0iMy4yNyA2Ljk2IDEyIDEyLjAxIDIwLjczIDYuOTYiPjwvcG9seWxpbmU+PGxpbmUgeDE9IjEyIiB5MT0iMjIuMDgiIHgyPSIxMiIgeTI9IjEyIj48L2xpbmU+PC9zdmc+" class="icon" alt="清理图标">
-                            <span>一键清理</span>
-                        </div>
-                        
-                        <div class="cleaned" :style="{display: cleanCompleted ? 'block' : 'none'}">
-                            <span>已清理完成！手机焕然一新</span>
-                        </div>
-                        
-                        <div v-if="noJunkTipVisible" style="text-align: center; margin-top: 15px;">
-                            <span style="color: #FFEB3B; font-weight: 700; font-size: 18px;">当前没有垃圾可清理</span>
-                        </div>
-                    </div>
-                    
-                    <!-- 功能卡片区域 -->
-                    <div class="function-cards">
-                        <!-- 功能卡片组件 -->
-                        <div 
-                            v-for="(card, index) in functionCards" 
-                            :key="index" 
-                            :class="['card', card.type]" 
-                            @click="onCardClick($event, card)">
-                            <div class="icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="30" height="30" fill="white" v-html="card.svgPath"></svg>
-                            </div>
-                            <div class="card-title">{{card.title}}</div>
-                            <div class="desc">{{card.desc}}</div>
-                        </div>
-                    </div>
-                    
-                    <!-- 底部推荐区域 -->
-                    <div class="bottom-section">
-                        <div class="app-icon">
-                            <img src="http://gui.vigame.cn/apkFenFa/geyu_20250327143611_144-y.png" alt="云杉垃圾清理" class="app-icon-img">
-                        </div>
-                        <div class="text">
-                            <h3>云杉垃圾清理</h3>
-                            <p>一键清理，让手机焕然一新</p>
-                        </div>
-                    </div>
-                    
-                    <!-- 粒子动画容器 -->
-                    <div class="particles" ref="particles"></div>
-                </div>
+                <div class="home-indicator"></div>
             </div>
         </div>
     </div>
-
+    
     <script>
-        new Vue({
-            el: '#app',
-            data: {
-                currentTime: '9:41',
-                initialJunkSize: 1.2,
-                junkSize: 1.2,
-                progressOffset: 500,
-                cleanCompleted: false,
-                cleaning: false,
-                noJunkTipVisible: false,
-                audioContext: null,
-                functionCards: [
-                    {
-                        type: 'memory',
-                        title: '内存加速',
-                        desc: '释放内存提升运行速度',
-                        svgPath: '<path d="M13.13 22.19L11.5 18.36C13.07 17.78 14.54 17 15.9 16.09L13.13 22.19M5.64 12.5L1.81 10.87L7.91 8.1C7 9.46 6.22 10.93 5.64 12.5M21.61 2.39C21.61 2.39 16.66 0.269 11 5.93C8.81 8.12 7.5 10.53 6.65 12.64C6.37 13.39 6.56 14.21 7.11 14.77L9.24 16.89C9.79 17.45 10.61 17.63 11.36 17.35C13.5 16.53 15.88 15.19 18.07 13C23.73 7.34 21.61 2.39 21.61 2.39M14.54 9.46C13.76 8.68 13.76 7.41 14.54 6.63S16.59 5.85 17.37 6.63C18.14 7.41 18.15 8.68 17.37 9.46C16.59 10.24 15.32 10.24 14.54 9.46Z"/>'
-                    },
-                    {
-                        type: 'power',
-                        title: '强力省电',
-                        desc: '优化耗电延长续航',
-                        svgPath: '<path d="M16 20H8V6h8m.67-2H15V2H9v2H7.33C6.6 4 6 4.6 6 5.33v15.34C6 21.4 6.6 22 7.33 22h9.34c.73 0 1.33-.6 1.33-1.33V5.33C18 4.6 17.4 4 16.67 4z"/>'
-                    },
-                    {
-                        type: 'virus',
-                        title: '病毒查杀',
-                        desc: '全面扫描保障安全',
-                        svgPath: '<path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>'
-                    },
-                    {
-                        type: 'wechat',
-                        title: '微信专清',
-                        desc: '彻底清理微信垃圾',
-                        svgPath: '<path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/><path d="M7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/>'
-                    },
-                    {
-                        type: 'malware',
-                        title: '恶意软件检测',
-                        desc: '查找并移除恶意程序',
-                        svgPath: '<path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>'
-                    }
-                ]
-            },
-            mounted() {
-                this.updateTime();
-                setInterval(this.updateTime, 60000);
+        const { createApp } = Vue;
+        
+        createApp({
+            data() {
+                return {
+                    scanning: false
+                }
             },
             methods: {
-                updateTime() {
-                    const now = new Date();
-                    this.currentTime = `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`;
-                },
-                startCleaning() {
-                    // 播放点击音效
-                    this.playClickSound();
-                    
-                    // 如果垃圾为0，显示提示
-                    if (this.junkSize === 0) {
-                        this.cleanCompleted = false;
-                        this.noJunkTipVisible = true;
-                        
-                        // 2秒后隐藏提示
-                        setTimeout(() => {
-                            this.noJunkTipVisible = false;
-                        }, 2000);
-                        
-                        return;
-                    }
-                    
-                    // 如果正在清理，不执行
-                    if (this.cleaning) return;
-                    
-                    // 重置状态
-                    this.noJunkTipVisible = false;
-                    this.cleanCompleted = false;
-                    this.cleaning = true;
-                    this.junkSize = this.initialJunkSize;
-                    this.progressOffset = 500;
-                    
-                    // 启动清理动画
-                    let startTime = null;
-                    const duration = 3000;
-                    
-                    const animateClean = (timestamp) => {
-                        if (!startTime) startTime = timestamp;
-                        const elapsed = timestamp - startTime;
-                        const progress = Math.min(elapsed / duration, 1);
-                        
-                        // 更新进度条和垃圾大小
-                        this.progressOffset = (500 * (1 - progress)).toFixed(1);
-                        this.junkSize = this.initialJunkSize * (1 - progress);
-                        
-                        if (progress < 1) {
-                            requestAnimationFrame(animateClean);
-                        } else {
-                            // 完成清理
-                            this.junkSize = 0;
-                            this.cleanCompleted = true;
-                            this.cleaning = false;
-                            this.createParticles();
-                        }
-                    };
-                    
+                startScan() {
+                    this.scanning = true;
+                    // 这里可以添加扫描动画和逻辑
                     setTimeout(() => {
-                        requestAnimationFrame(animateClean);
-                    }, 100);
+                        this.scanning = false;
+                        alert('扫描完成！发现238MB可清理垃圾');
+                    }, 2000);
                 },
-                initAudio() {
-                    if (!this.audioContext) {
-                        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    }
-                    return this.audioContext;
+                accelerate() {
+                    alert('正在加速手机...');
                 },
-                playClickSound() {
-                    const context = this.initAudio();
-                    
-                    // 创建振荡器
-                    const oscillator = context.createOscillator();
-                    const gainNode = context.createGain();
-                    
-                    // 设置振荡器类型和频率
-                    oscillator.type = 'sine';
-                    oscillator.frequency.setValueAtTime(800, context.currentTime);
-                    oscillator.frequency.exponentialRampToValueAtTime(200, context.currentTime + 0.1);
-                    
-                    // 设置音量衰减
-                    gainNode.gain.setValueAtTime(0.3, context.currentTime);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.1);
-                    
-                    // 连接节点
-                    oscillator.connect(gainNode);
-                    gainNode.connect(context.destination);
-                    
-                    // 播放音效
-                    oscillator.start();
-                    oscillator.stop(context.currentTime + 0.1);
+                analyzeMemory() {
+                    alert('正在分析内存...');
                 },
-                onCardClick(event, card) {
-                    // 播放点击音效
-                    this.playClickSound();
-                    
-                    // 添加波纹效果
-                    const rect = event.currentTarget.getBoundingClientRect();
-                    const x = event.clientX - rect.left;
-                    const y = event.clientY - rect.top;
-                    
-                    const ripple = document.createElement('div');
-                    ripple.classList.add('ripple');
-                    ripple.style.left = `${x}px`;
-                    ripple.style.top = `${y}px`;
-                    
-                    event.currentTarget.appendChild(ripple);
-                    
-                    setTimeout(() => {
-                        ripple.remove();
-                    }, 600);
+                uninstallApps() {
+                    alert('应用卸载功能');
                 },
-                createParticles() {
-                    // 清空之前的粒子
-                    const particlesContainer = this.$refs.particles;
-                    particlesContainer.innerHTML = '';
-                    
-                    // 获取按钮的位置
-                    const cleanButton = document.querySelector('.clean-button');
-                    const buttonRect = cleanButton.getBoundingClientRect();
-                    const centerX = buttonRect.left + buttonRect.width/2;
-                    const centerY = buttonRect.top + buttonRect.height/2;
-                    
-                    // 创建粒子
-                    for (let i = 0; i < 40; i++) {
-                        const particle = document.createElement('div');
-                        particle.classList.add('particle');
-                        
-                        // 随机颜色
-                        const colors = ['#0D47A1', '#1976D2', '#FFEB3B', '#FFC107', '#FFFFFF'];
-                        const randomColor = colors[Math.floor(Math.random() * colors.length)];
-                        particle.style.backgroundColor = randomColor;
-                        
-                        // 随机大小
-                        const size = Math.random() * 12 + 6;
-                        particle.style.width = `${size}px`;
-                        particle.style.height = `${size}px`;
-                        
-                        // 随机角度和距离
-                        const angle = Math.random() * Math.PI * 2;
-                        const distance = Math.random() * 100 + 60;
-                        
-                        // 起始位置（从按钮中心开始）
-                        particle.style.left = `${centerX}px`;
-                        particle.style.top = `${centerY}px`;
-                        
-                        // 添加到容器
-                        particlesContainer.appendChild(particle);
-                        
-                        // 应用动画
-                        setTimeout(() => {
-                            particle.style.transition = 'all 1s ease-out';
-                            particle.style.left = `${centerX + Math.cos(angle) * distance}px`;
-                            particle.style.top = `${centerY + Math.sin(angle) * distance}px`;
-                            particle.style.opacity = '1';
-                            
-                            // 淡出
-                            setTimeout(() => {
-                                particle.style.opacity = '0';
-                            }, 800);
-                        }, Math.random() * 200);
-                    }
+                cleanImages() {
+                    alert('图片清理功能');
+                },
+                cleanVideos() {
+                    alert('视频清理功能');
+                },
+                cleanNotifications() {
+                    alert('通知清理功能');
+                },
+                fullSearch() {
+                    alert('全盘搜索功能');
+                },
+                cleanLargeFiles() {
+                    alert('大文件专清功能');
+                },
+                testWifi() {
+                    alert('WiFi测速功能');
+                },
+                checkWifiUsers() {
+                    alert('蹭网检测功能');
+                },
+                controlTraffic() {
+                    alert('流量控制功能');
                 }
             }
-        });
+        }).mount('#app');
     </script>
 </body>
 </html> 
